@@ -31,9 +31,8 @@ class Header extends Component {
   }
 
   render() {
-    return (
-      <header>
-        <Navbar color="light" light expand="md">
+    return <header>
+        <Navbar color="dark" dark expand="md">
           <NavbarBrand tag={Link} to="/">
             Boardgame App
           </NavbarBrand>
@@ -72,8 +71,7 @@ class Header extends Component {
             </Nav>
           </Collapse>
         </Navbar>
-      </header>
-    );
+      </header>;
   }
 }
 
