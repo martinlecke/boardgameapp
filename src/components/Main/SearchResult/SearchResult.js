@@ -1,30 +1,46 @@
-import React, {Component} from 'react';
-import { Col } from 'reactstrap';
-import './SearchResult.scss';
+import React, { Component } from "react";
+import { Col } from "reactstrap";
+import SingleResult from './SingleResult/SingleResult';
+import "./SearchResult.scss";
 
-let myResult = {
-      title: "Pandemic",
-      year: 2008,
-      picture: "https://target.scene7.com/is/image/Target/GUEST_0313f621-d762-4e1d-9855-e32163314488?wid=488&hei=488&fmt=pjpeg",
-      bggRating: 7.49
-};
-
+let myResults = [{
+  title: "Pandemic",
+  year: 2008,
+  picture:
+    "https://target.scene7.com/is/image/Target/GUEST_0313f621-d762-4e1d-9855-e32163314488?wid=488&hei=488&fmt=pjpeg",
+  bggRating: 7.49,
+  _id: 456546345345953458
+}, {
+    title: "Pandemic Expansion",
+    year: 2008,
+    picture:
+      "https://target.scene7.com/is/image/Target/GUEST_0313f621-d762-4e1d-9855-e32163314488?wid=488&hei=488&fmt=pjpeg",
+    bggRating: 7.49,
+    _id: 235324554
+  }, {
+    title: "Pandemic: Seasons 2",
+    year: 2011,
+    picture:
+      "https://target.scene7.com/is/image/Target/GUEST_0313f621-d762-4e1d-9855-e32163314488?wid=488&hei=488&fmt=pjpeg",
+    bggRating: 4.49,
+    _id: 653556
+  }
+];
 
 class SearchResult extends Component {
-
-
   render() {
-    return <Col className="main_box_ui p-3">
-        <ul className="list-unstyled">
-          <li>
-            <ul className="d-flex single-result list-unstyled">
-              <li><img src={myResult.picture} alt={myResult.title} /></li>
-              <li>{myResult.title}</li>
-              <li>{myResult.year}</li>
-              <li>{myResult.bggRating}</li>
-            </ul>
-          </li>
-        </ul>
+    const header = {
+      title: 'Title',
+      year: 'Year',
+      bggRating: 'Rating'
+    }
+    return <Col className="main_box_ui  py-3 px-4">
+        <SingleResult header={header} />
+        <div className="d-flex flex-column">
+          {myResults.map(game => (
+            <SingleResult key={game._id} game={game} />
+          ))}
+        </div>
       </Col>;
   }
 }
