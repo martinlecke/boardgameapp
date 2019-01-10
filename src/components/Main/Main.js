@@ -7,6 +7,7 @@ import {
 } from "reactstrap";
 import SearchResult from './SearchResult/SearchResult';
 import Home from './Home/Home';
+import BoardGame from './BoardGame/BoardGame';
 import './Main.scss';
 
 class Main extends Component {
@@ -17,6 +18,7 @@ class Main extends Component {
           <Row>
             <Route path="/" exact component={Home} />
             <Route path="/search" component={SearchResult} />
+            <Route path="/boardgame/:id" component={BoardGame} />
           </Row>
         </Container>
       </main>
