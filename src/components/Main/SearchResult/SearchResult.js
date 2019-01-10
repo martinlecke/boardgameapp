@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Col } from "reactstrap";
 import SingleResult from './SingleResult/SingleResult';
+import queryString from "query-string";
 import "./SearchResult.scss";
 
 let myResults = [{
@@ -28,13 +29,17 @@ let myResults = [{
 ];
 
 class SearchResult extends Component {
+  componentDidMount() {
+    const values = queryString.parse(this.props.location.search);
+    console.log(values);
+  }
   render() {
     const header = {
       title: 'Title',
       year: 'Year',
       bggRating: 'Rating'
     }
-    return <Col className="main_box_ui  py-3 px-4">
+    return <Col className="main_box_ui py-3 px-4">
         <SingleResult header={header} />
         <div className="d-flex flex-column">
           {myResults.map(game => (

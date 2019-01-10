@@ -3,26 +3,11 @@ import { Route } from "react-router-dom";
 import { withRouter } from "react-router";
 import {
   Container,
-  Row,
-  Col,
-  InputGroup,
-  Input,
-  InputGroupAddon,
-  Button
+  Row
 } from "reactstrap";
 import SearchResult from './SearchResult/SearchResult';
+import Home from './Home/Home';
 import './Main.scss';
-
-const Home = () => (
-  <Col className="d-flex justify-content-center flex-column align-items-center search-main">
-    <InputGroup size="lg">
-      <Input />
-      <InputGroupAddon addonType="append">
-        <Button>Search</Button>
-      </InputGroupAddon>
-    </InputGroup>
-  </Col>
-);
 
 class Main extends Component {
   render() {
