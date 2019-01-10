@@ -17,7 +17,7 @@ const singleResult = props => {
     );
   }
   return (
-    <Link to={`/boardgame/${props.game._id}`} className="d-flex single-result">
+    <Link to={`/boardgame/${props.game._id}`} payload={props.game} className="d-flex single-result">
       <div>
         <img src={ props.game.picture } alt={ props.game.title } />
       </div>
