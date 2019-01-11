@@ -1,26 +1,57 @@
 import React, { Component } from "react";
-import { Col } from 'reactstrap';
-import myResults from '../_temp';
+import { Col, Row } from "reactstrap";
+import myResults from "../_temp";
+import "./BoardGame.scss";
 
 class BoardGame extends Component {
-
   state = {
     game: null
-  }
+  };
 
   componentDidMount() {
-    this.setState({ game: myResults.filter(each => String(each._id) === this.props.match.params.id)[0] })
+    this.setState({
+      game: myResults.filter(
+        each => String(each._id) === this.props.match.params.id
+      )[0]
+    });
   }
 
   render() {
     const game = this.state.game;
     return (
       <Col>
-        BoardGame clicked on {this.props.match.params.id}
-        <p>{ game && game.title } {game && game.year}</p>
-        <p>
-          <img src={game && game.picture} alt={game && game.title} />
-        </p>
+        <Row>
+          <Col className="main_box_ui boardgame">
+            <div className="d-flex py-3 px-4">
+              <div>
+                <img
+                  src={game && game.picture}
+                  alt={game && game.title}
+                  className="boardgame_cover_img"
+                />
+              </div>
+              <div className="flex-grow-1">
+                <Row>
+                  <Col md="10">
+                    <h1>
+                      {game && game.title} <small>({game && game.year})</small>
+                    </h1>
+                  </Col>
+                  <Col tag="h3" md="2" className="text-right" title="Boardgamegeek.com Rating">
+                    <span>{game && game.bggRating}</span> <br />
+                    <small>Rating</small>
+                  </Col>
+                </Row>
+              </div>
+            </div>
+            <div />
+          </Col>
+        </Row>
+        <Row>
+          <Col className="main_box_ui mt-3 py-3 px-4">
+            <div>{game && game.description}</div>
+          </Col>
+        </Row>
       </Col>
     );
   }
