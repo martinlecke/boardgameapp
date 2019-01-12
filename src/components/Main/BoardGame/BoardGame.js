@@ -18,28 +18,33 @@ class BoardGame extends Component {
 
   render() {
     const game = this.state.game;
-    return (
-      <Col>
+    return <Col>
         <Row>
           <Col className="main_box_ui boardgame">
             <div className="d-flex py-3 px-4">
               <div>
-                <img
-                  src={game && game.picture}
-                  alt={game && game.title}
-                  className="boardgame_cover_img"
-                />
+                <img src={game && game.picture} alt={game && game.title} className="boardgame_cover_img" />
               </div>
               <div className="flex-grow-1">
                 <Row>
                   <Col md="10">
                     <h1>
-                      {game && game.title} <small>({game && game.year})</small>
+                      {game && game.title} <small>
+                        ({game && game.year})
+                      </small>
                     </h1>
                   </Col>
                   <Col tag="h3" md="2" className="text-right" title="Boardgamegeek.com Rating">
                     <span>{game && game.bggRating}</span> <br />
                     <small>Rating</small>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col className="boardgame_detail">
+                    <div> { game && game.age} </div>
+                    <div> { game && game.players } players</div>
+                    <div> { game && game.playingtime } min </div>
+                    <div> { game && game.complexity } </div>
                   </Col>
                 </Row>
               </div>
@@ -52,8 +57,7 @@ class BoardGame extends Component {
             <div>{game && game.description}</div>
           </Col>
         </Row>
-      </Col>
-    );
+      </Col>;
   }
 }
 
