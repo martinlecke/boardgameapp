@@ -20,12 +20,12 @@ class BoardGame extends Component {
     const game = this.state.game;
     return <Col>
         <Row>
-          <Col className="main_box_ui boardgame">
-            <div className="d-flex py-3 px-4">
-              <div>
+          <Col className="main_box_ui boardgame px-0">
+            <div className="d-flex p-4">
+              <div className="mr-4">
                 <img src={game && game.picture} alt={game && game.title} className="boardgame_cover_img" />
               </div>
-              <div className="flex-grow-1">
+              <div className="flex-grow-1 d-flex flex-column">
                 <Row>
                   <Col md="10">
                     <h1>
@@ -39,11 +39,11 @@ class BoardGame extends Component {
                     <small>Rating</small>
                   </Col>
                 </Row>
-                <Row>
+                <Row className="mt-auto">
                   <Col className="boardgame_detail">
                     <div> { game && game.age} </div>
                     <div> { game && game.players } players</div>
-                    <div> { game && game.playingtime } min </div>
+                    <div> { game && game.playingtime } </div>
                     <div> { game && game.complexity } </div>
                   </Col>
                 </Row>
