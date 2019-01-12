@@ -6,6 +6,8 @@ const PORT = process.env.PORT || 8080;
 
 app.use(express.static(path.join(__dirname, '../build')));
 
+app.use(bodyParser.json());
+
 app.get('/test', function (req, res) {
   return res.send('test');
 });
