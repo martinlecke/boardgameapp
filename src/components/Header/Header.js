@@ -104,20 +104,18 @@ class Header extends Component {
                     {this.state.login && (
                       <Fragment>
                         <FormGroup>
-                          <Label for="exampleEmail">Email</Label>
+                          <Label for="email">Email</Label>
                           <Input
                             type="email"
                             name="email"
-                            id="exampleEmail"
                             placeholder=""
                           />
                         </FormGroup>
                         <FormGroup>
-                          <Label for="examplePassword">Password</Label>
+                          <Label for="password">Password</Label>
                           <Input
                             type="password"
                             name="password"
-                            id="examplePassword"
                             placeholder=""
                           />
                         </FormGroup>
@@ -129,29 +127,26 @@ class Header extends Component {
                     {this.state.register && (
                       <Fragment>
                         <FormGroup>
-                          <Label for="exampleEmail">Email</Label>
+                          <Label for="email">Email</Label>
                           <Input
                             type="email"
                             name="email"
-                            id="exampleEmail"
                             placeholder=""
                           />
                         </FormGroup>
                         <FormGroup>
-                          <Label for="examplePassword">Password</Label>
+                          <Label for="password">Password</Label>
                           <Input
                             type="password"
                             name="password"
-                            id="examplePassword"
                             placeholder=""
                           />
                         </FormGroup>
                         <FormGroup>
-                          <Label for="examplePassword">Repeat password</Label>
+                          <Label for="repeatpassword">Repeat password</Label>
                           <Input
                             type="password"
-                            name="password"
-                            id="examplePassword"
+                            name="repeatpassword"
                             placeholder=""
                           />
                         </FormGroup>
