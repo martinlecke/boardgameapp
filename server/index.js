@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 
 mongoose
   .connect(
-    "mongodb://localhost:27017/nodemountain",
+    "mongodb://localhost:27017/boardgameapp",
     { useNewUrlParser: true }
   )
   .then(async () => {
@@ -26,6 +26,7 @@ app.get("/register", async (req, res) => {
     email: "lecke.martin@gmail.com",
     password: "testpass"
   });
+  await user.save();
   return res.send(user);
 });
 
