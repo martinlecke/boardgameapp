@@ -1,3 +1,12 @@
 .navbar_login_dropdown {
   width: 300px;
+  .nav-item a.nav-link {
+    &.active {
+      color: black;
+    }
+    color: #ccc;
+    &:hover {
+      color: black;
+    }
+  }
 }

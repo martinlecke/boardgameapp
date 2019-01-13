@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { withRouter } from "react-router";
 import { Link } from "react-router-dom";
 import {
@@ -26,12 +26,20 @@ import "./Header.scss";
 
 class Header extends Component {
   state = {
-    isOpen: false
+    isOpen: false,
+    login: true,
+    register: false
   };
 
   toggle = () => {
     this.setState({
       isOpen: !this.state.isOpen
+    });
+  };
+
+  handleLoginRegister = e => {
+    this.setState(prevState => {
+      return { login: !prevState.login, register: !prevState.register };
     });
   };
 
@@ -71,27 +79,87 @@ class Header extends Component {
                 <DropdownMenu right>
                   {/* Logged in */}
                   <Form className="p-3 navbar_login_dropdown">
-                    <FormGroup>
-                      <Label for="exampleEmail">Email</Label>
-                      <Input
-                        type="email"
-                        name="email"
-                        id="exampleEmail"
-                        placeholder=""
-                      />
-                    </FormGroup>
-                    <FormGroup>
-                      <Label for="examplePassword">Password</Label>
-                      <Input
-                        type="password"
-                        name="password"
-                        id="examplePassword"
-                        placeholder=""
-                      />
-                    </FormGroup>
-                    <FormGroup>
-                      <Button className="w-100">Login</Button>
-                    </FormGroup>
+                    <Nav tabs className="mb-2">
+                      <NavItem>
+                        <NavLink
+                          href="#"
+                          title="Login"
+                          onClick={this.handleLoginRegister}
+                          className={this.state.login ? 'active': ''}
+                        >
+                          Login
+                        </NavLink>
+                      </NavItem>
+                      <NavItem>
+                        <NavLink
+                          title="Register"
+                          href="#"
+                          onClick={this.handleLoginRegister}
+                          className={this.state.register ? 'active' : ''}
+                        >
+                          Register
+                        </NavLink>
+                      </NavItem>
+                    </Nav>
+                    {this.state.login && (
+                      <Fragment>
+                        <FormGroup>
+                          <Label for="exampleEmail">Email</Label>
+                          <Input
+                            type="email"
+                            name="email"
+                            id="exampleEmail"
+                            placeholder=""
+                          />
+                        </FormGroup>
+                        <FormGroup>
+                          <Label for="examplePassword">Password</Label>
+                          <Input
+                            type="password"
+                            name="password"
+                            id="examplePassword"
+                            placeholder=""
+                          />
+                        </FormGroup>
+                        <FormGroup>
+                          <Button className="w-100">Login</Button>
+                        </FormGroup>
+                      </Fragment>
+                    )}
+                    {this.state.register && (
+                      <Fragment>
+                        <FormGroup>
+                          <Label for="exampleEmail">Email</Label>
+                          <Input
+                            type="email"
+                            name="email"
+                            id="exampleEmail"
+                            placeholder=""
+                          />
+                        </FormGroup>
+                        <FormGroup>
+                          <Label for="examplePassword">Password</Label>
+                          <Input
+                            type="password"
+                            name="password"
+                            id="examplePassword"
+                            placeholder=""
+                          />
+                        </FormGroup>
+                        <FormGroup>
+                          <Label for="examplePassword">Repeat password</Label>
+                          <Input
+                            type="password"
+                            name="password"
+                            id="examplePassword"
+                            placeholder=""
+                          />
+                        </FormGroup>
+                        <FormGroup>
+                          <Button className="w-100">Register</Button>
+                        </FormGroup>
+                      </Fragment>
+                    )}
                   </Form>
                   {/* Not logged in */}
                   {/* <DropdownItem>My games</DropdownItem>
