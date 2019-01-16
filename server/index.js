@@ -1,6 +1,5 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const path = require("path");
 const app = express();
 const mongoose = require("mongoose");
 var passport = require("passport"),
@@ -9,22 +8,9 @@ const session = require("express-session");
 const User = require("./models/User");
 const PORT = process.env.PORT || 8080;
 const uuid = require("uuid/v4");
+const FileStore = require("session-file-store")(session);
 
 app.use(bodyParser.json());
-
-// add & configure middleware
-app.use(
-  session({
-    genid: req => {
-      console.log("Inside the session middleware");
-      console.log(req.sessionID);
-      return uuid(); // use UUIDs for session IDs
-    },
-    secret: "keyboard cat",
-    resave: false,
-    saveUninitialized: true
-  })
-);
 
 mongoose
   .connect(
@@ -35,6 +21,22 @@ mongoose
     console.log("DB Connected!");
   })
   .catch(err => console.error(err));
+
+
+// add & configure middleware
+app.use(
+  session({
+    genid: req => {
+      console.log("Inside the session middleware");
+      console.log(req.sessionID);
+      return uuid(); // use UUIDs for session IDs
+    },
+    store: new FileStore(),
+    secret: "keyboard cat",
+    resave: false,
+    saveUninitialized: true
+  })
+);
 
 app.get("/register", async (req, res) => {
   const user = await new User({
