@@ -6,9 +6,8 @@ const LocalStrategy = require("passport-local").Strategy;
 const session = require("express-session");
 const User = require("./models/User");
 const PORT = process.env.PORT || 8080;
-const uuid = require("uuid/v4");
-const FileStore = require("session-file-store")(session);
 const MongoStore = require("connect-mongo")(session);
+const cors = require('cors');
 
 mongoose
   .connect(
@@ -55,6 +54,7 @@ passport.deserializeUser((user, done) => {
 
 // create the server
 const app = express();
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 
 // add & configure middleware
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -64,7 +64,7 @@ app.use(
     cookie: {
       maxAge: 30 * 24 * 60 * 60 * 1000
     },
-    secret: "!Id!K7L16HBAkoYu",
+    secret: "iuwebfhwfb8ywebf8wyebfwe8fyb",
     resave: false,
     saveUninitialized: false,
     store: new MongoStore({

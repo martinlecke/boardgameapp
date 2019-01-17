@@ -78,7 +78,7 @@ class Header extends Component {
                 </DropdownToggle>
                 <DropdownMenu right>
                   {/* Logged in */}
-                  <Form className="p-3 navbar_login_dropdown">
+                  <div className="p-3 navbar_login_dropdown">
                     <Nav tabs className="mb-2">
                       <NavItem>
                         <NavLink
@@ -125,7 +125,7 @@ class Header extends Component {
                       </Fragment>
                     )}
                     {this.state.register && (
-                      <Fragment>
+                      <Form onSubmit={this.props.handleRegister} action="POST">
                         <FormGroup>
                           <Label for="email">Email</Label>
                           <Input
@@ -151,11 +151,11 @@ class Header extends Component {
                           />
                         </FormGroup>
                         <FormGroup>
-                          <Button className="w-100">Register</Button>
+                          <Button className="w-100" type="submit">Register</Button>
                         </FormGroup>
-                      </Fragment>
+                      </Form>
                     )}
-                  </Form>
+                  </div>
                   {/* Not logged in */}
                   {/* <DropdownItem>My games</DropdownItem>
                   <DropdownItem divider />
