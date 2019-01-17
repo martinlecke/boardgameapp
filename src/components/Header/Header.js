@@ -12,7 +12,7 @@ import {
   UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
-  // DropdownItem,
+  DropdownItem,
   // FormText,
   InputGroup,
   InputGroupAddon,
@@ -23,6 +23,8 @@ import {
   Input
 } from "reactstrap";
 import "./Header.scss";
+import GuestRoute from "../../HOC/GuestRoute";
+import PrivateRoute from "../../HOC/PrivateRoute";
 
 class Header extends Component {
   state = {
@@ -73,94 +75,101 @@ class Header extends Component {
               </NavItem>
               {/* User Account menu */}
               <UncontrolledDropdown nav inNavbar>
-                <DropdownToggle nav caret>
-                  Login
-                </DropdownToggle>
-                <DropdownMenu right>
-                  {/* Logged in */}
-                  <div className="p-3 navbar_login_dropdown">
-                    <Nav tabs className="mb-2">
-                      <NavItem>
-                        <NavLink
-                          href="#"
-                          title="Login"
-                          onClick={this.handleLoginRegister}
-                          className={this.state.login ? 'active': ''}
+                <GuestRoute loggedIn={this.props.loggedIn}>
+                  <DropdownToggle nav caret>
+                    Login
+                  </DropdownToggle>
+                  <DropdownMenu right>
+                    {/* Logged in */}
+                    <div className="p-3 navbar_login_dropdown">
+                      <Nav tabs className="mb-2">
+                        <NavItem>
+                          <NavLink
+                            href="#"
+                            title="Login"
+                            onClick={this.handleLoginRegister}
+                            className={this.state.login ? "active" : ""}
+                          >
+                            Login
+                          </NavLink>
+                        </NavItem>
+                        <NavItem>
+                          <NavLink
+                            title="Register"
+                            href="#"
+                            onClick={this.handleLoginRegister}
+                            className={this.state.register ? "active" : ""}
+                          >
+                            Register
+                          </NavLink>
+                        </NavItem>
+                      </Nav>
+                      {this.state.login && (
+                        <Form onSubmit={this.props.handleLogin} action="POST">
+                          <FormGroup>
+                            <Label for="email">Email</Label>
+                            <Input type="email" name="email" placeholder="" />
+                          </FormGroup>
+                          <FormGroup>
+                            <Label for="password">Password</Label>
+                            <Input
+                              type="password"
+                              name="password"
+                              placeholder=""
+                            />
+                          </FormGroup>
+                          <FormGroup>
+                            <Button className="w-100" type="submit">
+                              Login
+                            </Button>
+                          </FormGroup>
+                        </Form>
+                      )}
+                      {this.state.register && (
+                        <Form
+                          onSubmit={this.props.handleRegister}
+                          action="POST"
                         >
-                          Login
-                        </NavLink>
-                      </NavItem>
-                      <NavItem>
-                        <NavLink
-                          title="Register"
-                          href="#"
-                          onClick={this.handleLoginRegister}
-                          className={this.state.register ? 'active' : ''}
-                        >
-                          Register
-                        </NavLink>
-                      </NavItem>
-                    </Nav>
-                    {this.state.login && (
-                      <Form onSubmit={this.props.handleLogin} action="POST">
-                        <FormGroup>
-                          <Label for="email">Email</Label>
-                          <Input
-                            type="email"
-                            name="email"
-                            placeholder=""
-                          />
-                        </FormGroup>
-                        <FormGroup>
-                          <Label for="password">Password</Label>
-                          <Input
-                            type="password"
-                            name="password"
-                            placeholder=""
-                          />
-                        </FormGroup>
-                        <FormGroup>
-                          <Button className="w-100" type="submit">Login</Button>
-                        </FormGroup>
-                      </Form>
-                    )}
-                    {this.state.register && (
-                      <Form onSubmit={this.props.handleRegister} action="POST">
-                        <FormGroup>
-                          <Label for="email">Email</Label>
-                          <Input
-                            type="email"
-                            name="email"
-                            placeholder=""
-                          />
-                        </FormGroup>
-                        <FormGroup>
-                          <Label for="password">Password</Label>
-                          <Input
-                            type="password"
-                            name="password"
-                            placeholder=""
-                          />
-                        </FormGroup>
-                        <FormGroup>
-                          <Label for="repeatpassword">Repeat password</Label>
-                          <Input
-                            type="password"
-                            name="repeatpassword"
-                            placeholder=""
-                          />
-                        </FormGroup>
-                        <FormGroup>
-                          <Button className="w-100" type="submit">Register</Button>
-                        </FormGroup>
-                      </Form>
-                    )}
-                  </div>
-                  {/* Not logged in */}
-                  {/* <DropdownItem>My games</DropdownItem>
-                  <DropdownItem divider />
-                  <DropdownItem>Log out</DropdownItem> */}
-                </DropdownMenu>
+                          <FormGroup>
+                            <Label for="email">Email</Label>
+                            <Input type="email" name="email" placeholder="" />
+                          </FormGroup>
+                          <FormGroup>
+                            <Label for="password">Password</Label>
+                            <Input
+                              type="password"
+                              name="password"
+                              placeholder=""
+                            />
+                          </FormGroup>
+                          <FormGroup>
+                            <Label for="repeatpassword">Repeat password</Label>
+                            <Input
+                              type="password"
+                              name="repeatpassword"
+                              placeholder=""
+                            />
+                          </FormGroup>
+                          <FormGroup>
+                            <Button className="w-100" type="submit">
+                              Register
+                            </Button>
+                          </FormGroup>
+                        </Form>
+                      )}
+                    </div>
+                  </DropdownMenu>
+                </GuestRoute>
+                <PrivateRoute loggedIn={this.props.loggedIn}>
+                  <DropdownToggle nav caret>
+                    My Page
+                  </DropdownToggle>
+                  <DropdownMenu right>
+                    <DropdownItem>Options</DropdownItem>
+                    <DropdownItem divider />
+                    <DropdownItem>Log out</DropdownItem>
+                  </DropdownMenu>
+                </PrivateRoute>
               </UncontrolledDropdown>
             </Nav>
           </Collapse>

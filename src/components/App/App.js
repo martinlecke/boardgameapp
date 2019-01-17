@@ -7,6 +7,10 @@ import Header from "../Header/Header";
 import "./App.scss";
 
 class App extends Component {
+  state = {
+    loggedIn: false
+  };
+
   handleRegister = e => {
     e.preventDefault();
     const email = e.target.elements.email.value;
@@ -43,8 +47,8 @@ class App extends Component {
       },
       withCredentials: true
     }).then(response => {
-      console.log('Login response');
-      console.log(response);
+      console.log('loggat in', this.state)
+      this.setState({ loggedIn: true });
     });
   };
 
@@ -54,6 +58,7 @@ class App extends Component {
         <Header
           handleRegister={this.handleRegister}
           handleLogin={this.handleLogin}
+          loggedIn={this.state.loggedIn}
         />
         <Main />
       </div>
