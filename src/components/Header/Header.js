@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import { withRouter } from "react-router";
 import { Link } from "react-router-dom";
 import {
@@ -102,7 +102,7 @@ class Header extends Component {
                       </NavItem>
                     </Nav>
                     {this.state.login && (
-                      <Fragment>
+                      <Form onSubmit={this.props.handleLogin} action="POST">
                         <FormGroup>
                           <Label for="email">Email</Label>
                           <Input
@@ -120,9 +120,9 @@ class Header extends Component {
                           />
                         </FormGroup>
                         <FormGroup>
-                          <Button className="w-100">Login</Button>
+                          <Button className="w-100" type="submit">Login</Button>
                         </FormGroup>
-                      </Fragment>
+                      </Form>
                     )}
                     {this.state.register && (
                       <Form onSubmit={this.props.handleRegister} action="POST">
