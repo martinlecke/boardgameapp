@@ -41,6 +41,7 @@ class App extends Component {
       },
       withCredentials: true
     }).then(response => {
+      this.setState({ loggedIn: response.data.loggedIn });
     });
   };
 
@@ -67,7 +68,6 @@ class App extends Component {
   handleLogout = () => {
     axios.get("http://localhost:8080/user/logout", {withCredentials: true}).then(response => {
       this.setState({ loggedIn: false });
-      console.log("loggat ut", this.state);
     });
   };
 

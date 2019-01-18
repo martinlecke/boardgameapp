@@ -46,7 +46,6 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser((user, done) => {
-  console.log("THIS IS ID", user);
   User.findById(user).then(user => {
     done(null, user);
   });
@@ -107,13 +106,24 @@ app.get("/auth", (req, res) => {
   }
 });
 
+app.get("/user/me", (req, res) => {
+  if (req.isAuthenticated()) {
+    res.json({email: req.user.email});
+  } else {
+    res.send("You are not logged in");
+  }
+});
+
 app.post("/user/register", async (req, res) => {
   let user = await new User({
     email: req.body.email,
     password: req.body.password
   });
   await user.save();
-  res.send(user);
+  req.logIn(user, function (err) {
+    if (err) { return next(err); }
+    return res.send({loggedIn: true});
+  });
 });
 
 app.listen(PORT, () => {
