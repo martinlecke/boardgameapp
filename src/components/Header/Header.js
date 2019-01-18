@@ -166,7 +166,7 @@ class Header extends Component {
                   <DropdownMenu right>
                     <DropdownItem>Options</DropdownItem>
                     <DropdownItem divider />
-                    <DropdownItem>Log out</DropdownItem>
+                    <DropdownItem onClick={this.props.handleLogout}>Log out</DropdownItem>
                   </DropdownMenu>
                 </PrivateRoute>
               </UncontrolledDropdown>

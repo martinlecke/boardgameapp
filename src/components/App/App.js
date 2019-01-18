@@ -10,7 +10,7 @@ class App extends Component {
   state = {
     loggedIn: false
   };
-  
+
   componentDidMount() {
     axios({
       method: "get",
@@ -20,14 +20,9 @@ class App extends Component {
       },
       withCredentials: true
     })
-    .then(response => {
-      console.log("loggedIn:", this.state.loggedIn);
-      this.setState({ loggedIn: true });
-    })
-    .catch((error) => {
-      console.log('loggedIn:', this.state.loggedIn)
-      this.setState({ loggedIn: false });
-    });
+      .then(response => {
+        this.setState({ loggedIn: response.data.loggedIn });
+      })
   }
 
   handleRegister = e => {
@@ -46,7 +41,6 @@ class App extends Component {
       },
       withCredentials: true
     }).then(response => {
-      console.log(response);
     });
   };
 
@@ -66,8 +60,14 @@ class App extends Component {
       },
       withCredentials: true
     }).then(response => {
-      console.log('loggat in', this.state)
       this.setState({ loggedIn: true });
+    });
+  };
+
+  handleLogout = () => {
+    axios.get("http://localhost:8080/user/logout", {withCredentials: true}).then(response => {
+      this.setState({ loggedIn: false });
+      console.log("loggat ut", this.state);
     });
   };
 
@@ -78,6 +78,7 @@ class App extends Component {
           handleRegister={this.handleRegister}
           handleLogin={this.handleLogin}
           loggedIn={this.state.loggedIn}
+          handleLogout={this.handleLogout}
         />
         <Main />
       </div>

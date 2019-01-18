@@ -83,14 +83,19 @@ app.get("/", (req, res) => {
 
 app.get("/user/login", (req, res) => {
   if (req.isAuthenticated()) {
-    res.send(200, 'Authorized');
+    res.json({loggedIn: true});
   } else {
-    res.send(401, "Unauthorized");
+    res.json({loggedIn: false});
   }
 });
 
 app.post("/user/login", passport.authenticate("local"), (req, res) => {
   res.json(req.user);
+});
+
+app.get('/user/logout', function (req, res) {
+  req.logout();
+  res.send('User logged out.');
 });
 
 // testroute for auth
