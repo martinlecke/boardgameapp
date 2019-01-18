@@ -83,9 +83,9 @@ app.get("/", (req, res) => {
 
 app.get("/user/login", (req, res) => {
   if (req.isAuthenticated()) {
-    res.send('you are logged in');
+    res.send(200, 'Authorized');
   } else {
-    res.send("You are not logged in");
+    res.send(401, "Unauthorized");
   }
 });
 

@@ -10,6 +10,25 @@ class App extends Component {
   state = {
     loggedIn: false
   };
+  
+  componentDidMount() {
+    axios({
+      method: "get",
+      url: "http://localhost:8080/user/login",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      withCredentials: true
+    })
+    .then(response => {
+      console.log("loggedIn:", this.state.loggedIn);
+      this.setState({ loggedIn: true });
+    })
+    .catch((error) => {
+      console.log('loggedIn:', this.state.loggedIn)
+      this.setState({ loggedIn: false });
+    });
+  }
 
   handleRegister = e => {
     e.preventDefault();
