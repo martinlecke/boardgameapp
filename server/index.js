@@ -7,7 +7,9 @@ const session = require("express-session");
 const User = require("./models/User");
 const PORT = process.env.PORT || 8080;
 const MongoStore = require("connect-mongo")(session);
-const cors = require('cors');
+const cors = require("cors");
+const parseString = require("xml2js").parseString;
+const axios = require("axios");
 
 mongoose
   .connect(
@@ -82,9 +84,9 @@ app.get("/", (req, res) => {
 
 app.get("/user/login", (req, res) => {
   if (req.isAuthenticated()) {
-    res.json({loggedIn: true});
+    res.json({ loggedIn: true });
   } else {
-    res.json({loggedIn: false});
+    res.json({ loggedIn: false });
   }
 });
 
@@ -92,9 +94,9 @@ app.post("/user/login", passport.authenticate("local"), (req, res) => {
   res.json(req.user);
 });
 
-app.get('/user/logout', function (req, res) {
+app.get("/user/logout", function(req, res) {
   req.logout();
-  res.send('User logged out.');
+  res.send("User logged out.");
 });
 
 // testroute for auth
@@ -108,7 +110,7 @@ app.get("/auth", (req, res) => {
 
 app.get("/user/me", (req, res) => {
   if (req.isAuthenticated()) {
-    res.json({email: req.user.email});
+    res.json({ email: req.user.email });
   } else {
     res.send("You are not logged in");
   }
@@ -120,11 +122,112 @@ app.post("/user/register", async (req, res) => {
     password: req.body.password
   });
   await user.save();
-  req.logIn(user, function (err) {
-    if (err) { return next(err); }
-    return res.send({loggedIn: true});
+  req.logIn(user, function(err) {
+    if (err) {
+      return next(err);
+    }
+    return res.send({ loggedIn: true });
   });
 });
+
+function filterApiResponse(response) {
+  const allowed = [
+    "image",
+    "name",
+    "yearpublished",
+    "description",
+    "minplayers",
+    "maxplayers",
+    "playingtime",
+    "minplaytime",
+    "maxplaytime",
+    "statistics"
+  ];
+  const filtered = Object.keys(response)
+    .filter(key => allowed.includes(key))
+    .reduce((obj, key) => {
+      return {
+        ...obj,
+        [key]: response[key]
+      };
+    }, {});
+
+  const restructured = {
+    image: filtered.image,
+    yearPublished: filtered.yearpublished[0]["$"].value,
+    minPlayers: filtered.minplayers[0]["$"].value,
+    maxPlayers: filtered.maxplayers[0]["$"].value,
+    playingTime: filtered.playingtime[0]["$"].value,
+    title: filtered.name[0]["$"].value,
+    description: filtered.description[0],
+    bggRating: filtered.statistics[0].ratings[0].average[0]["$"].value
+  };
+
+  return restructured;
+}
+
+app.get("/api/boardgame/:gameId", (req, res) => {
+  const gameId = req.params.gameId;
+  axios
+    .get(`https://www.boardgamegeek.com/xmlapi2/thing`, {
+      params: {
+        id: gameId,
+        videos: 1,
+        stats: 1
+      }
+    })
+    .then(response => {
+      parseString(response.data, async function(err, result) {
+        const filtered = await filterApiResponse(result.items.item[0]);
+
+        res.json(filtered);
+      });
+    })
+    .catch(e => {
+      res.send("error");
+    });
+});
+
+// /**
+//  * Filtering xml api call to JSON with keys defined in Allowed array
+//  *
+//  */
+// app.post('/api/boardgame', (response) => {
+
+//   const allowed = [
+//     'image',
+//     'name',
+//     'yearpublished',
+//     'description',
+//     'minplayers',
+//     'maxplayers',
+//     'playingtime',
+//     'minplaytime',
+//     'maxplaytime',
+//     'statistics'
+//   ];
+//   const filtered = Object.keys(response)
+//     .filter(key => allowed.includes(key))
+//     .reduce((obj, key) => {
+//       return {
+//         ...obj,
+//         [key]: response[key]
+//       };
+//     }, {});
+
+//   const restructured = {
+//     image: filtered.image,
+//     yearpublished: filtered.yearpublished[0]['$'].value,
+//     minplayers: filtered.minplayers[0]['$'].value,
+//     maxplayers: filtered.maxplayers[0]['$'].value,
+//     playingtime: filtered.playingtime[0]['$'].value,
+//     name: filtered.name[0]['$'].value,
+//     description: filtered.description[0],
+//     rating: filtered.statistics[0].ratings[0].average[0]['$'].value
+//   }
+
+//   res.json(restructured);
+// });
 
 app.listen(PORT, () => {
   console.log("Express is running on port", PORT);
