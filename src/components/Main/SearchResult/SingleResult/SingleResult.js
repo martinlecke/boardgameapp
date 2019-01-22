@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import noCoverImg from '../../../img/nopicture.gif'
 
 
 const singleResult = props => {
@@ -19,7 +20,7 @@ const singleResult = props => {
   return (
     <Link to={`/boardgame/${props.game.gameId}`} payload={props.game} className="d-flex single-result">
       <div>
-        <img src={ props.game.image && props.game.image } alt={ props.game.title } />
+        <img src={ props.game.image || noCoverImg } alt={ props.game.title } />
       </div>
       <h3 className="ml-4 align-self-center">
         { props.game.title } <small>({ props.game.yearPublished })</small>

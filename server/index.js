@@ -220,17 +220,18 @@ app.get("/api/search", (req, res) => {
       })
       .then(async response => {
         parseString(response.data, async (err, result) => {
-          const results = await result.items.item.map(game => {
-            if (game["yearpublished"]) {
-              const gameId = game["$"].id,
-                title = game["name"][0]["$"].value,
-                yearPublished = game["yearpublished"][0]["$"].value;
-              return { gameId, title, yearPublished };
-            }
-            return false;
-          })
-          .filter(game => game);
-          res.send(results);
+          const results = await result.items.item
+            .map(game => {
+              if (game["yearpublished"]) {
+                const gameId = game["$"].id,
+                  title = game["name"][0]["$"].value,
+                  yearPublished = game["yearpublished"][0]["$"].value;
+                return { gameId, title, yearPublished };
+              }
+              return false;
+            })
+            .filter(game => game);
+          res.send(results.splice(0,30));
         });
       })
       .catch(e => {
