@@ -5,6 +5,7 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const session = require("express-session");
 const User = require("./models/User");
+const Boardgame = require("./models/Boardgame");
 const PORT = process.env.PORT || 8080;
 const MongoStore = require("connect-mongo")(session);
 const cors = require("cors");
@@ -130,7 +131,7 @@ app.post("/user/register", async (req, res) => {
   });
 });
 
-function filterApiResponse(response) {
+async function filterApiResponse(response, gameId) {
   const allowed = [
     "image",
     "name",
@@ -154,7 +155,7 @@ function filterApiResponse(response) {
       };
     }, {});
 
-  const restructured = {
+  const boardgame = await new Boardgame({
     image: filtered.image,
     yearPublished: filtered.yearpublished[0]["$"].value,
     minPlayers: filtered.minplayers[0]["$"].value,
@@ -164,32 +165,41 @@ function filterApiResponse(response) {
     description: filtered.description[0],
     bggRating: Number(filtered.statistics[0].ratings[0].average[0]["$"].value).toFixed(2),
     complexity: filtered.statistics[0].ratings[0].averageweight[0]["$"].value,
-    age: filtered.minage[0]["$"].value
-  };
+    age: filtered.minage[0]["$"].value,
+    gameId
+  });
+  await boardgame.save()
 
-  return restructured;
+  return boardgame;
 }
 
-app.get("/api/boardgame/:gameId", (req, res) => {
+app.get("/api/boardgame/:gameId", async (req, res) => {
   const gameId = req.params.gameId;
-  axios
-    .get(`https://www.boardgamegeek.com/xmlapi2/thing`, {
-      params: {
-        id: gameId,
-        videos: 1,
-        stats: 1
+  Boardgame.findOne({gameId})
+    .then((game) => {
+      if (game) {
+        res.send('Gejm hittat')
+      } else {
+        axios
+          .get(`https://www.boardgamegeek.com/xmlapi2/thing`, {
+            params: {
+              id: gameId,
+              videos: 1,
+              stats: 1
+            }
+          })
+          .then(response => {
+            parseString(response.data, async function (err, result) {
+              const filtered = await filterApiResponse(result.items.item[0], gameId);
+
+              res.json(filtered);
+            });
+          })
+          .catch(e => {
+            res.send("error");
+          });
       }
     })
-    .then(response => {
-      parseString(response.data, async function(err, result) {
-        const filtered = await filterApiResponse(result.items.item[0]);
-
-        res.json(filtered);
-      });
-    })
-    .catch(e => {
-      res.send("error");
-    });
 });
 
 // /**
