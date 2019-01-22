@@ -11,6 +11,7 @@ const MongoStore = require("connect-mongo")(session);
 const cors = require("cors");
 const parseString = require("xml2js").parseString;
 const axios = require("axios");
+const _ = require('lodash');
 
 mongoose
   .connect(
@@ -200,6 +201,35 @@ app.get("/api/boardgame/:gameId", async (req, res) => {
           });
       }
     })
+});
+
+app.get("/api/search", (req, res) => {
+  console.log(req.query)
+  if (!_.isEmpty(req.query)) {
+    req.query.type = 'boardgame';
+    req.query.exact = req.query.exact || 0;
+    axios.get('https://www.boardgamegeek.com/xmlapi2/search', {
+      params: req.query
+    })
+      .then( async (response) => {
+        let results = [];
+        await parseString(response.data, (err, result) => {
+           results = result.items.item.map((game) => {
+             return {
+               gameId: game['$'].id,
+               title: game['name'][0]['$'].value,
+               yearPublished: game['yearpublished'][0]['$'].value
+             }
+           })
+        });
+        res.send(results);
+      })
+      .catch(() => {
+        console.log('error att hämta');
+      });
+  } else {
+    res.send('Det fanns ingen sökterm');
+  }
 });
 
 // /**
