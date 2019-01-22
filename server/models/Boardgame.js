@@ -11,7 +11,10 @@ const boardgameSchema = new mongoose.Schema({
   bggRating: String,
   complexity: String,
   age: String,
-  gameId: Number,
+  gameId: {
+    type: Number,
+    unique: true
+  },
   updatedAt: { type: Date, default: Date.now }
 });
 

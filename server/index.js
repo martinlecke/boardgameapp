@@ -178,7 +178,7 @@ app.get("/api/boardgame/:gameId", async (req, res) => {
   Boardgame.findOne({gameId})
     .then((game) => {
       if (game) {
-        res.send('Gejm hittat')
+        res.json(game)
       } else {
         axios
           .get(`https://www.boardgamegeek.com/xmlapi2/thing`, {
