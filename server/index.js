@@ -11,7 +11,7 @@ const MongoStore = require("connect-mongo")(session);
 const cors = require("cors");
 const parseString = require("xml2js").parseString;
 const axios = require("axios");
-const _ = require('lodash');
+const _ = require("lodash");
 
 mongoose
   .connect(
@@ -164,71 +164,80 @@ async function filterApiResponse(response, gameId) {
     playingTime: filtered.playingtime[0]["$"].value,
     title: filtered.name[0]["$"].value,
     description: filtered.description[0],
-    bggRating: Number(filtered.statistics[0].ratings[0].average[0]["$"].value).toFixed(2),
-    complexity: Number(filtered.statistics[0].ratings[0].averageweight[0]["$"].value).toFixed(2),
+    bggRating: Number(
+      filtered.statistics[0].ratings[0].average[0]["$"].value
+    ).toFixed(2),
+    complexity: Number(
+      filtered.statistics[0].ratings[0].averageweight[0]["$"].value
+    ).toFixed(2),
     age: filtered.minage[0]["$"].value,
     gameId
   });
-  await boardgame.save()
+  await boardgame.save();
 
   return boardgame;
 }
 
 app.get("/api/boardgame/:gameId", async (req, res) => {
   const gameId = req.params.gameId;
-  Boardgame.findOne({gameId})
-    .then((game) => {
-      if (game) {
-        res.json(game)
-      } else {
-        axios
-          .get(`https://www.boardgamegeek.com/xmlapi2/thing`, {
-            params: {
-              id: gameId,
-              videos: 1,
-              stats: 1
-            }
-          })
-          .then(response => {
-            parseString(response.data, async function (err, result) {
-              const filtered = await filterApiResponse(result.items.item[0], gameId);
+  Boardgame.findOne({ gameId }).then(game => {
+    if (game) {
+      res.json(game);
+    } else {
+      axios
+        .get(`https://www.boardgamegeek.com/xmlapi2/thing`, {
+          params: {
+            id: gameId,
+            videos: 1,
+            stats: 1
+          }
+        })
+        .then(response => {
+          parseString(response.data, async function(err, result) {
+            const filtered = await filterApiResponse(
+              result.items.item[0],
+              gameId
+            );
 
-              res.json(filtered);
-            });
-          })
-          .catch(e => {
-            res.send("error");
+            res.json(filtered);
           });
-      }
-    })
+        })
+        .catch(e => {
+          res.send("error");
+        });
+    }
+  });
 });
 
 app.get("/api/search", (req, res) => {
-  console.log(req.query)
+  console.log(req.query);
   if (!_.isEmpty(req.query)) {
-    req.query.type = 'boardgame';
+    req.query.type = "boardgame";
     req.query.exact = req.query.exact || 0;
-    axios.get('https://www.boardgamegeek.com/xmlapi2/search', {
-      params: req.query
-    })
-      .then( async (response) => {
-        let results = [];
-        await parseString(response.data, (err, result) => {
-           results = result.items.item.map((game) => {
-             return {
-               gameId: game['$'].id,
-               title: game['name'][0]['$'].value,
-               yearPublished: game['yearpublished'][0]['$'].value
-             }
-           })
-        });
-        res.send(results);
+    axios
+      .get("https://www.boardgamegeek.com/xmlapi2/search", {
+        params: req.query
       })
-      .catch(() => {
-        console.log('error att hämta');
+      .then(async response => {
+        parseString(response.data, async (err, result) => {
+          const results = await result.items.item.map(game => {
+            if (game["yearpublished"]) {
+              const gameId = game["$"].id,
+                title = game["name"][0]["$"].value,
+                yearPublished = game["yearpublished"][0]["$"].value;
+              return { gameId, title, yearPublished };
+            }
+            return false;
+          })
+          .filter(game => game);
+          res.send(results);
+        });
+      })
+      .catch(e => {
+        console.log("error att hämta", e);
       });
   } else {
-    res.send('Det fanns ingen sökterm');
+    res.send("Det fanns ingen sökterm");
   }
 });
 

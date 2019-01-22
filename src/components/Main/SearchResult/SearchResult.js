@@ -3,12 +3,17 @@ import { Col } from "reactstrap";
 import SingleResult from './SingleResult/SingleResult';
 import queryString from "query-string";
 import myResults from '../_temp' // Temp
+import axios from 'axios';
 import "./SearchResult.scss";
 
 class SearchResult extends Component {
   componentDidMount() {
-    const values = queryString.parse(this.props.location.search);
+    const values = this.props.location.search.substr(1);
     console.log(values);
+    axios.get(`http://localhost:8080/api/search?${values}`)
+      .then(response => {
+        console.log(response.data)
+      });
   }
   render() {
     const header = {
