@@ -141,7 +141,9 @@ function filterApiResponse(response) {
     "playingtime",
     "minplaytime",
     "maxplaytime",
-    "statistics"
+    "statistics",
+    "averageweight",
+    "minage"
   ];
   const filtered = Object.keys(response)
     .filter(key => allowed.includes(key))
@@ -160,7 +162,9 @@ function filterApiResponse(response) {
     playingTime: filtered.playingtime[0]["$"].value,
     title: filtered.name[0]["$"].value,
     description: filtered.description[0],
-    bggRating: filtered.statistics[0].ratings[0].average[0]["$"].value
+    bggRating: Number(filtered.statistics[0].ratings[0].average[0]["$"].value).toFixed(2),
+    complexity: filtered.statistics[0].ratings[0].averageweight[0]["$"].value,
+    age: filtered.minage[0]["$"].value
   };
 
   return restructured;

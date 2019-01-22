@@ -32,21 +32,25 @@ class BoardGame extends Component {
                   <Col md="10">
                     <h1>
                       {game && game.title} <small>
-                      ({game && game.yearPublished})
+                        ({game && game.yearPublished})
                       </small>
                     </h1>
                   </Col>
                   <Col tag="h3" md="2" className="text-right" title="Boardgamegeek.com Rating">
-                    <span>{game && game.bggRating}</span> <br />
+                    <span>
+                      { game && game.bggRating }
+                    </span> <br />
                     <small>Rating</small>
                   </Col>
                 </Row>
                 <Row className="mt-auto">
                   <Col className="boardgame_detail">
-                    {/* <div> { game && game.age} </div> */}
-                  <div> {game && game.minPlayers} - {game && game.maxPlayers} players</div>
-                    <div> { game && game.playingTime } min</div>
-                    {/* <div> { game && game.complexity } </div> */}
+                    <div> age {game && game.age}+ </div>
+                    <div>
+                      {game && game.minPlayers} - {game && game.maxPlayers} players
+                    </div>
+                    <div> {game && game.playingTime} min</div>
+                    <div> {game && game.complexity} </div>
                   </Col>
                 </Row>
               </div>
