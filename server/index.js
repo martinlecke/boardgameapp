@@ -164,7 +164,7 @@ async function filterApiResponse(response, gameId) {
     title: filtered.name[0]["$"].value,
     description: filtered.description[0],
     bggRating: Number(filtered.statistics[0].ratings[0].average[0]["$"].value).toFixed(2),
-    complexity: filtered.statistics[0].ratings[0].averageweight[0]["$"].value,
+    complexity: Number(filtered.statistics[0].ratings[0].averageweight[0]["$"].value).toFixed(2),
     age: filtered.minage[0]["$"].value,
     gameId
   });
