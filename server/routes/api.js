@@ -28,7 +28,8 @@ router.get("/search", (req, res) => {
             })
             .filter(game => game);
 
-          res.send(results);
+            res.send(results)
+            
         });
       })
       .catch(e => {
@@ -38,6 +39,7 @@ router.get("/search", (req, res) => {
     res.send("Det fanns ingen sökterm");
   }
 });
+
 
 async function filterApiResponse(response, gameId) {
   const allowed = [
@@ -85,33 +87,38 @@ async function filterApiResponse(response, gameId) {
   return boardgame;
 }
 
+function fetchBoardgameById(gameId) {
+        axios
+          .get(`https://www.boardgamegeek.com/xmlapi2/thing`, {
+            params: {
+              id: gameId,
+              videos: 1,
+              stats: 1
+            }
+          })
+          .then(response => {
+            parseString(response.data, async function (err, result) {
+              const filtered = await filterApiResponse(
+                result.items.item[0],
+                gameId
+              );
+
+              return filtered;
+            });
+          })
+          .catch(e => {
+            console.log("error");
+          });
+}
+
 router.get("/boardgame/:gameId", async (req, res) => {
   const gameId = req.params.gameId;
-  Boardgame.findOne({ gameId }).then(game => {
+  Boardgame.findOne({ gameId }).then(async (game) => {
     if (game) {
       res.json(game);
     } else {
-      axios
-        .get(`https://www.boardgamegeek.com/xmlapi2/thing`, {
-          params: {
-            id: gameId,
-            videos: 1,
-            stats: 1
-          }
-        })
-        .then(response => {
-          parseString(response.data, async function (err, result) {
-            const filtered = await filterApiResponse(
-              result.items.item[0],
-              gameId
-            );
-
-            res.json(filtered);
-          });
-        })
-        .catch(e => {
-          res.send("error");
-        });
+      let games = await fetchBoardgameById(gameId);
+      res.send(games);  
     }
   });
 });
