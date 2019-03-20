@@ -31,7 +31,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "devserver": "nodemon server/ --ignore src/"
+    "devserver": "nodemon server/ --ignore src/",
+    "start:dev": "concurrently -n \"public,server\" -c \"blue.bold,red.bold\" \"npm run start\" \"npm run devserver\""
   },
   "eslintConfig": {
     "extends": "react-app"

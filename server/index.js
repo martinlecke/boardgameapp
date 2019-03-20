@@ -1,28 +1,25 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
-const passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy;
-const session = require("express-session");
-const User = require("./models/User");
+const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const session = require('express-session');
+const User = require('./models/User');
 const PORT = process.env.PORT || 8080;
-const MongoStore = require("connect-mongo")(session);
-const cors = require("cors");
+const MongoStore = require('connect-mongo')(session);
+const cors = require('cors');
 const apiRoutes = require('./routes/api');
 
 mongoose
-  .connect(
-    "mongodb://localhost:27017/boardgameapp",
-    { useNewUrlParser: true }
-  )
+  .connect('mongodb://localhost:27017/boardgameapp', { useNewUrlParser: true })
   .then(async () => {
-    console.log("DB Connected!");
+    console.log('DB Connected!');
   })
   .catch(err => console.error(err));
 
 // configure passport.js to use the local strategy
 passport.use(
-  new LocalStrategy({ usernameField: "email" }, (email, password, done) => {
+  new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
     User.findOne({ email }).then(user => {
       if (!user || !user.password) {
         return done(null, false);
@@ -54,7 +51,7 @@ passport.deserializeUser((user, done) => {
 
 // create the server
 const app = express();
-app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 
 // add & configure middleware
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -64,24 +61,24 @@ app.use(
     cookie: {
       maxAge: 30 * 24 * 60 * 60 * 1000
     },
-    secret: "iuwebfhwfb8ywebf8wyebfwe8fyb",
+    secret: 'iuwebfhwfb8ywebf8wyebfwe8fyb',
     resave: false,
     saveUninitialized: false,
     store: new MongoStore({
       mongooseConnection: mongoose.connection,
       ttl: 30 * 24 * 60 * 60,
-      autoRemove: "native"
+      autoRemove: 'native'
     })
   })
 );
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get("/", (req, res) => {
+app.get('/', (req, res) => {
   res.send(`This is ze homepage /`);
 });
 
-app.get("/user/login", (req, res) => {
+app.get('/user/login', (req, res) => {
   if (req.isAuthenticated()) {
     res.json({ loggedIn: true });
   } else {
@@ -89,49 +86,73 @@ app.get("/user/login", (req, res) => {
   }
 });
 
-app.post("/user/login", passport.authenticate("local"), (req, res) => {
+app.post('/user/login', passport.authenticate('local'), (req, res) => {
   res.json(req.user);
 });
 
-app.get("/user/logout", function(req, res) {
+app.get('/user/logout', function(req, res) {
   req.logout();
-  res.send("User logged out.");
+  res.send('User logged out.');
 });
 
 // testroute for auth
-app.get("/auth", (req, res) => {
+app.get('/auth', (req, res) => {
   if (req.isAuthenticated()) {
-    res.send("This is an auth route");
+    res.send('This is an auth route');
   } else {
-    res.redirect("/");
+    res.redirect('/');
   }
 });
 
-app.get("/user/me", (req, res) => {
+app.get('/user/me', (req, res) => {
   if (req.isAuthenticated()) {
     res.json({ email: req.user.email });
   } else {
-    res.send("You are not logged in");
+    res.send('You are not logged in');
   }
 });
 
-app.post("/user/register", async (req, res) => {
-  let user = await new User({
-    email: req.body.email,
-    password: req.body.password
+function validateEmail(email) {
+  var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(String(email).toLowerCase());
+}
+
+app.post('/user/register', async (req, res) => {
+  const { email, password } = req.body;
+  User.findOne({email}).then(user => {
+    if(user) {
+      console.log(`Failed to register. User already exist: ${email}`);
+      res.status(409).json({error: 'User already exist', code: 409})
+    }
+  })
+  if (!validateEmail(email)) {
+    console.log('Not a valid email format.');
+    res.status(400).json({ error: 'Not a valid email format.', code: 400 })
+  } 
+  const user = await new User({
+    email,
+    password
   });
-  await user.save();
+  await user
+    .save()
+    .then(user => {
+      console.log('New User saved.', user);
+    })
+    .catch(e => {
+      console.log('User could not be saved:', e);
+      if (e.code === 11000) {
+        res.status(400).json({ error: 'User already exist', code: 11000 });
+      }
+    });
   req.logIn(user, function(err) {
     if (err) {
       return next(err);
     }
-    return res.send({ loggedIn: true });
+    return res.send({registered: true, loggedIn: true });
   });
 });
 
-
-
-app.use('/api', apiRoutes)
+app.use('/api', apiRoutes);
 
 // /**
 //  * Filtering xml api call to JSON with keys defined in Allowed array
@@ -175,5 +196,5 @@ app.use('/api', apiRoutes)
 // });
 
 app.listen(PORT, () => {
-  console.log("Express is running on port", PORT);
+  console.log('Express is running on port', PORT);
 });

@@ -12,6 +12,7 @@ class BoardGame extends Component {
     axios.get(`http://localhost:8080/api/boardgame/${this.props.match.params.id}`)
       .then((response) => {
         this.setState({game: response.data})
+        console.log(response.data)
       })
       .catch((e) => {
         console.error(e)
@@ -20,6 +21,10 @@ class BoardGame extends Component {
 
   render() {
     const game = this.state.game;
+
+    if (game) {
+      game.bggRating = game.bggRating === '0.00' ? '-.-' : game.bggRating;
+    }
     return <Col>
         <Row>
           <Col className="main_box_ui boardgame px-0">

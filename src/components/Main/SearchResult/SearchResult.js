@@ -10,9 +10,11 @@ class SearchResult extends Component {
   };
   componentDidMount() {
     const searchQuery = this.props.location.search;
-    axios
-      .get(`http://localhost:8080/api/search${searchQuery}`)
-      .then(response => {this.setState({games: response.data})});
+    searchQuery.length > 10 ? 
+      axios
+        .get(`http://localhost:8080/api/search${searchQuery}`)
+        .then(response => {this.setState({games: response.data})}) :
+        this.props.history.push('/');
   }
   render() {
     const header = {
@@ -27,6 +29,7 @@ class SearchResult extends Component {
           {this.state.games && this.state.games.map(game => (
             <SingleResult key={game.gameId} game={game} />
           ))}
+          {this.state.games.length === 0 && <div className="my-3 mx-auto">No search results.</div>}
         </div>
       </Col>
     );

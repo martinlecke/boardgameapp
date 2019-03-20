@@ -13,8 +13,6 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
-  InputGroup,
-  InputGroupAddon,
   Button,
   Form,
   FormGroup,
@@ -54,14 +52,14 @@ class Header extends Component {
           <NavbarToggler onClick={this.toggle} />
           <Collapse isOpen={this.state.isOpen} navbar>
             <Nav className="ml-auto" navbar>
-              <NavItem>
+              {/* <NavItem>
                 <InputGroup className="pt-4 pt-md-0">
                   <Input />
                   <InputGroupAddon addonType="append">
                     <Button>Search</Button>
                   </InputGroupAddon>
                 </InputGroup>
-              </NavItem>
+              </NavItem> */}
               <NavItem>
                 <NavLink tag={Link} to="/">
                   Home
