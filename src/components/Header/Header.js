@@ -120,6 +120,7 @@ class Header extends Component {
                               Login
                             </Button>
                           </FormGroup>
+                          {this.props.failLogin && <p className="error">{ this.props.failLogin }</p>}
                         </Form>
                       )}
                       {this.state.register && (

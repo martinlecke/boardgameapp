@@ -8,7 +8,8 @@ import "./App.scss";
 
 class App extends Component {
   state = {
-    loggedIn: false
+    loggedIn: false,
+    failLogin: ''
   };
 
   componentDidMount() {
@@ -47,6 +48,7 @@ class App extends Component {
 
   handleLogin = e => {
     e.preventDefault();
+    this.setState({ failLogin: '' })
     const email = e.target.elements.email.value;
     const password = e.target.elements.password.value;
     axios({
@@ -60,8 +62,12 @@ class App extends Component {
         password
       },
       withCredentials: true
-    }).then(response => {
+    })
+    .then(response => {
       this.setState({ loggedIn: true });
+    })
+    .catch(e => {
+      this.setState({failLogin: 'Wrong username or password.'})
     });
   };
 
@@ -79,6 +85,7 @@ class App extends Component {
           handleLogin={this.handleLogin}
           loggedIn={this.state.loggedIn}
           handleLogout={this.handleLogout}
+          failLogin={this.state.failLogin}
         />
         <Main />
       </div>
