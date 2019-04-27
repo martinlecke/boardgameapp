@@ -1,6 +1,8 @@
 import React, { Component } from "react";
+import { connect } from 'react-redux';
 import { withRouter } from "react-router";
 import axios from "axios";
+import { addTest } from '../../store/actions';
 
 import Main from "../Main/Main";
 import Header from "../Header/Header";
@@ -12,7 +14,7 @@ class App extends Component {
     failLogin: ''
   };
 
-  componentDidMount() {
+  componentDidMount() { 
     axios({
       method: "get",
       url: "http://localhost:8080/user/login",
@@ -87,10 +89,23 @@ class App extends Component {
           handleLogout={this.handleLogout}
           failLogin={this.state.failLogin}
         />
+        <button onClick={() => this.props.addTest('TEST IN ACTION')}>click</button>
         <Main />
       </div>
     );
   }
 }
 
-export default withRouter(App);
+const mapStateToProps = state => {
+  return {
+    test: state.test
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    addTest: test => dispatch(addTest(test))
+  };
+};
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
