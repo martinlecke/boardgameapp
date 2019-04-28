@@ -9,7 +9,7 @@ export default function(state = initialState, action) {
     case IS_LOGGED_IN: {
       return {
         ...state,
-        isLoggedIn: action.isLoggedIn
+        isLoggedIn: action.loggedIn
       };
     }
 

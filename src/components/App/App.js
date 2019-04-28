@@ -2,12 +2,11 @@ import React, { Component } from "react";
 import { connect } from 'react-redux';
 import { withRouter } from "react-router";
 import axios from "axios";
-import { addTest } from '../../store/actions';
+import { isLoggedIn } from '../../store/actions/authActions';
 
 import Main from "../Main/Main";
 import Header from "../Header/Header";
 import "./App.scss";
-import AuthenticationApi from "../../api/auth";
 
 class App extends Component {
   state = {
@@ -15,10 +14,7 @@ class App extends Component {
   };
 
   componentDidMount() { 
-    AuthenticationApi.login()
-    .then(loggedIn => {
-      this.setState({loggedIn})
-    })
+    this.props.isLoggedIn();
   }
 
   handleRegister = e => {
@@ -73,16 +69,16 @@ class App extends Component {
   };
 
   render() {
+    console.log(this.props)
     return (
       <div className="App">
         <Header
           handleRegister={this.handleRegister}
           handleLogin={this.handleLogin}
-          loggedIn={this.state.loggedIn}
+          loggedIn={this.props.auth.isLoggedIn}
           handleLogout={this.handleLogout}
           failLogin={this.state.failLogin}
         />
-        {/* <button onClick={() => this.props.addTest('TEST IN ACTION')}>click</button> */}
         <Main />
       </div>
     );
@@ -91,13 +87,13 @@ class App extends Component {
 
 const mapStateToProps = state => {
   return {
-    test: state.test
+    auth: state.auth
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    addTest: test => dispatch(addTest(test))
+    isLoggedIn: _ => dispatch(isLoggedIn())
   };
 };
 
