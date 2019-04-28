@@ -1,6 +1,8 @@
-import React, { Component } from "react";
-import { withRouter } from "react-router";
-import { Link } from "react-router-dom";
+import React, { Component } from 'react';
+import { withRouter } from 'react-router';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { login } from '../../store/actions/authActions';
 import {
   Collapse,
   Navbar,
@@ -18,10 +20,10 @@ import {
   FormGroup,
   Label,
   Input
-} from "reactstrap";
-import "./Header.scss";
-import GuestRoute from "../../HOC/GuestRoute";
-import PrivateRoute from "../../HOC/PrivateRoute";
+} from 'reactstrap';
+import './Header.scss';
+import GuestRoute from '../../HOC/GuestRoute';
+import PrivateRoute from '../../HOC/PrivateRoute';
 
 class Header extends Component {
   state = {
@@ -40,6 +42,16 @@ class Header extends Component {
     this.setState(prevState => {
       return { login: !prevState.login, register: !prevState.register };
     });
+  };
+
+  handleLogin = e => {
+    e.preventDefault();
+    this.setState({ failLogin: ''});
+    const credentials = {
+      email: e.target.elements.email.value,
+      password: e.target.elements.password.value
+    };
+    this.props.login(credentials);
   };
 
   render() {
@@ -72,7 +84,7 @@ class Header extends Component {
               </NavItem>
               {/* User Account menu */}
               <UncontrolledDropdown nav inNavbar>
-                <GuestRoute loggedIn={this.props.loggedIn}>
+                <GuestRoute loggedIn={this.props.auth.isLoggedIn}>
                   <DropdownToggle nav caret>
                     Login
                   </DropdownToggle>
@@ -85,7 +97,7 @@ class Header extends Component {
                             href="#"
                             title="Login"
                             onClick={this.handleLoginRegister}
-                            className={this.state.login ? "active" : ""}
+                            className={this.state.login ? 'active' : ''}
                           >
                             Login
                           </NavLink>
@@ -95,14 +107,14 @@ class Header extends Component {
                             title="Register"
                             href="#"
                             onClick={this.handleLoginRegister}
-                            className={this.state.register ? "active" : ""}
+                            className={this.state.register ? 'active' : ''}
                           >
                             Register
                           </NavLink>
                         </NavItem>
                       </Nav>
                       {this.state.login && (
-                        <Form onSubmit={this.props.handleLogin} action="POST">
+                        <Form onSubmit={this.handleLogin} action="POST">
                           <FormGroup>
                             <Label for="email">Email</Label>
                             <Input type="email" name="email" placeholder="" />
@@ -120,7 +132,9 @@ class Header extends Component {
                               Login
                             </Button>
                           </FormGroup>
-                          {this.props.failLogin && <p className="error">{ this.props.failLogin }</p>}
+                          {this.props.failLogin && (
+                            <p className="error">{this.props.failLogin}</p>
+                          )}
                         </Form>
                       )}
                       {this.state.register && (
@@ -158,14 +172,16 @@ class Header extends Component {
                     </div>
                   </DropdownMenu>
                 </GuestRoute>
-                <PrivateRoute loggedIn={this.props.loggedIn}>
+                <PrivateRoute loggedIn={this.props.auth.isLoggedIn}>
                   <DropdownToggle nav caret>
                     My Page
                   </DropdownToggle>
                   <DropdownMenu right>
                     <DropdownItem>Options</DropdownItem>
                     <DropdownItem divider />
-                    <DropdownItem onClick={this.props.handleLogout}>Log out</DropdownItem>
+                    <DropdownItem onClick={this.props.handleLogout}>
+                      Log out
+                    </DropdownItem>
                   </DropdownMenu>
                 </PrivateRoute>
               </UncontrolledDropdown>
@@ -177,4 +193,17 @@ class Header extends Component {
   }
 }
 
-export default withRouter(Header);
+const mapStateToProps = state => ({
+  auth: state.auth
+});
+
+const mapDispatchToProps = dispatch => ({
+  login: credentials => dispatch(login(credentials))
+});
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Header)
+);

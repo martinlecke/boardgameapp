@@ -3,12 +3,28 @@ import authApi from '../../api/auth';
 
 export const isLoggedIn = () => {
   return dispatch => {
-    authApi.login().then(loggedIn => {
+    authApi.isLoggedIn().then(loggedIn => {
       console.log('vad händer', loggedIn)
       dispatch({
         type: IS_LOGGED_IN,
         loggedIn
       });
     });
+  };
+};
+
+export const login = (credentials) => {
+  return dispatch => {
+    authApi.login(credentials).then(loggedIn => {
+      dispatch({
+        type: IS_LOGGED_IN,
+        loggedIn
+      });
+    });
+
+
+
+
+
   };
 };
