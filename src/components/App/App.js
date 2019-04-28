@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import axios from 'axios';
 import { isLoggedIn } from '../../store/actions/authActions';
 
 import Main from '../Main/Main';
@@ -17,20 +16,10 @@ class App extends Component {
     this.props.isLoggedIn();
   }
 
-  handleLogout = () => {
-    axios
-      .get('http://localhost:8080/user/logout', { withCredentials: true })
-      .then(response => {
-        this.setState({ loggedIn: false });
-      });
-  };
-
   render() {
-    console.log(this.props);
     return (
       <div className="App">
         <Header
-          handleLogout={this.handleLogout}
           failLogin={this.state.failLogin}
         />
         <Main />

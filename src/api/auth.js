@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export default { isLoggedIn, login, register };
+export default { isLoggedIn, login, register, logout };
 
 function isLoggedIn() {
   return axios({
@@ -53,4 +53,12 @@ function register({ email, password }) {
       return { loggedIn: true };
     })
     .catch(e => ({ loggedIn: false }));
+}
+
+function logout() {
+  return axios
+    .get('http://localhost:8080/user/logout', { withCredentials: true })
+    .then(response => {
+      return { loggedIn: false };
+    });
 }

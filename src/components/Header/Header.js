@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { login, register } from '../../store/actions/authActions';
+import { login, register, logout } from '../../store/actions/authActions';
 import {
   Collapse,
   Navbar,
@@ -186,7 +186,7 @@ class Header extends Component {
                   <DropdownMenu right>
                     <DropdownItem>Options</DropdownItem>
                     <DropdownItem divider />
-                    <DropdownItem onClick={this.props.handleLogout}>
+                    <DropdownItem onClick={this.props.logout}>
                       Log out
                     </DropdownItem>
                   </DropdownMenu>
@@ -206,7 +206,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   login: credentials => dispatch(login(credentials)),
-  register: credentials => dispatch(register(credentials))
+  register: credentials => dispatch(register(credentials)),
+  logout: () => dispatch(logout()),
 });
 
 export default withRouter(
