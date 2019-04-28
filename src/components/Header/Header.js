@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { login } from '../../store/actions/authActions';
+import { login, register } from '../../store/actions/authActions';
 import {
   Collapse,
   Navbar,
@@ -46,12 +46,22 @@ class Header extends Component {
 
   handleLogin = e => {
     e.preventDefault();
-    this.setState({ failLogin: ''});
+    this.setState({ failLogin: '' });
     const credentials = {
       email: e.target.elements.email.value,
       password: e.target.elements.password.value
     };
     this.props.login(credentials);
+  };
+
+  handleRegister = e => {
+    e.preventDefault();
+    this.setState({ failLogin: '' });
+    const credentials = {
+      email: e.target.elements.email.value,
+      password: e.target.elements.password.value
+    }
+    this.props.register(credentials);
   };
 
   render() {
@@ -138,10 +148,7 @@ class Header extends Component {
                         </Form>
                       )}
                       {this.state.register && (
-                        <Form
-                          onSubmit={this.props.handleRegister}
-                          action="POST"
-                        >
+                        <Form onSubmit={this.handleRegister} action="POST">
                           <FormGroup>
                             <Label for="email">Email</Label>
                             <Input type="email" name="email" placeholder="" />
@@ -198,7 +205,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  login: credentials => dispatch(login(credentials))
+  login: credentials => dispatch(login(credentials)),
+  register: credentials => dispatch(register(credentials))
 });
 
 export default withRouter(

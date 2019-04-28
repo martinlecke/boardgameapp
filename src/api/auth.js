@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export default { isLoggedIn, login };
+export default { isLoggedIn, login, register };
 
 function isLoggedIn() {
   return axios({
@@ -11,12 +11,11 @@ function isLoggedIn() {
     },
     withCredentials: true
   }).then(response => {
-    console.log(response.data);
     return response.data.loggedIn;
   });
 }
 
-function login(credentials) {
+function login({ email, password }) {
   return axios({
     method: 'post',
     url: 'http://localhost:8080/user/login',
@@ -24,8 +23,8 @@ function login(credentials) {
       'Content-Type': 'application/json'
     },
     data: {
-      email: credentials.email,
-      password: credentials.password
+      email,
+      password
     },
     withCredentials: true
   })
@@ -35,4 +34,23 @@ function login(credentials) {
     .catch(e => {
       return { loggedIn: false };
     });
+}
+
+function register({ email, password }) {
+  return axios({
+    method: 'post',
+    url: 'http://localhost:8080/user/register',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    data: {
+      email,
+      password
+    },
+    withCredentials: true
+  })
+    .then(response => {
+      return { loggedIn: true };
+    })
+    .catch(e => ({ loggedIn: false }));
 }
