@@ -7,25 +7,18 @@ import { addTest } from '../../store/actions';
 import Main from "../Main/Main";
 import Header from "../Header/Header";
 import "./App.scss";
+import AuthenticationApi from "../../api/auth";
 
 class App extends Component {
   state = {
-    loggedIn: false,
     failLogin: ''
   };
 
   componentDidMount() { 
-    axios({
-      method: "get",
-      url: "http://localhost:8080/user/login",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      withCredentials: true
+    AuthenticationApi.login()
+    .then(loggedIn => {
+      this.setState({loggedIn})
     })
-      .then(response => {
-        this.setState({ loggedIn: response.data.loggedIn });
-      })
   }
 
   handleRegister = e => {
@@ -89,7 +82,7 @@ class App extends Component {
           handleLogout={this.handleLogout}
           failLogin={this.state.failLogin}
         />
-        <button onClick={() => this.props.addTest('TEST IN ACTION')}>click</button>
+        {/* <button onClick={() => this.props.addTest('TEST IN ACTION')}>click</button> */}
         <Main />
       </div>
     );
